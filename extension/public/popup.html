@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>GAZO RENKIN</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <span class="flask" aria-hidden="true">⚗️</span>
+        <p>IMAGE ALCHEMY</p>
+        <h1><span>GAZO</span> <strong>RENKIN</strong></h1>
+      </header>
+
+      <section class="window" aria-labelledby="select-title">
+        <h2 id="select-title">✦ 1. 画像を なかまにする</h2>
+        <label class="file-button" for="images">▶ 画像を えらぶ</label>
+        <input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple />
+        <p class="hint">JPEG・PNG・WebP・HEIC ／ 最大25枚</p>
+        <div id="file-summary" class="message" aria-live="polite">まだ画像は ありません。</div>
+      </section>
+
+      <section class="window" aria-labelledby="settings-title">
+        <h2 id="settings-title">🛡 2. れんきんの さくせん</h2>
+        <div class="dimensions">
+          <label>幅（px）<input id="width" type="number" min="1" max="16384" value="1200" /></label>
+          <span>×</span>
+          <label>高さ（px）<input id="height" type="number" min="1" max="16384" value="800" disabled /></label>
+        </div>
+        <label class="check"><input id="keep-ratio" type="checkbox" checked /> 縦横比を まもる</label>
+        <label>出力形式
+          <select id="format">
+            <option value="image/webp">WebP（おすすめ）</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/png">PNG</option>
+          </select>
+        </label>
+        <label>画質：<output id="quality-value">82</output>
+          <input id="quality" type="range" min="20" max="100" value="82" />
+        </label>
+        <button id="forge" class="primary" type="button" disabled>▶ 画像を れんきんする</button>
+      </section>
+
+      <section class="window" aria-labelledby="result-title">
+        <h2 id="result-title">🏆 3. せいせいけっか</h2>
+        <div class="progress" role="progressbar" aria-label="処理進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar"></span></div>
+        <div id="status" class="message" aria-live="polite">▶ 画像をえらぶと 準備がはじまります。</div>
+      </section>
+
+      <footer>画像は外部送信されません。</footer>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "GAZO RENKIN",
+  "version": "0.1.0",
+  "description": "画像のサイズ変更・形式変換・圧縮を端末内だけで行います。",
+  "action": {
+    "default_title": "GAZO RENKIN",
+    "default_popup": "popup.html"
+  },
+  "permissions": [],
+  "host_permissions": [],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; worker-src 'self' blob:"
+  }
+}
