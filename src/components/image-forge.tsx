@@ -196,6 +196,9 @@ export function ImageForge() {
   const [showGodPassword, setShowGodPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  // ホカンテ：アプリ内一時保存かばん
+  const [stashedItems, setStashedItems] = useState<ImageItem[]>([]);
+  const [hokanteSelectedIds, setHokanteSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     const urls = objectUrls.current;
@@ -669,6 +672,62 @@ export function ImageForge() {
     });
   }
 
+  // ホカンテ：選択した画像をアプリ内かばんに一時保存（ダウンロードしない）
+  function castHokante() {
+    if (!hokanteSelectedIds.length) {
+      logMessage("ほかんする 画像を えらんでくれ！");
+      return;
+    }
+    const toStash = items.filter((item) => hokanteSelectedIds.includes(item.id));
+    setStashedItems((current) => {
+      // 同じIDがすでにあれば更新、なければ追加
+      const existingIds = new Set(current.map((i) => i.id));
+      const fresh = toStash.filter((i) => !existingIds.has(i.id));
+      const updated = current.map((i) => {
+        const match = toStash.find((t) => t.id === i.id);
+        return match ?? i;
+      });
+      return [...updated, ...fresh];
+    });
+    setHokanteSelectedIds([]);
+    playMagicSound();
+    logMessage(`ホカンテ！ ${toStash.length}まいを かばんに しまった！`);
+    logMessage("「まほう」→「ホカンテ」で いつでも とりだせるぞ！");
+    endTurn();
+  }
+
+  function retrieveFromStash(id: string) {
+    const item = stashedItems.find((i) => i.id === id);
+    if (!item) return;
+    // すでに items にある ID と被らないよう新規 ID で追加
+    const exists = items.some((i) => i.id === item.id);
+    const newItem = exists ? { ...item, id: crypto.randomUUID() } : item;
+    setItems((current) => [...current, newItem]);
+    setStashedItems((current) => current.filter((i) => i.id !== id));
+    logMessage(`「${item.file.name}」を かばんから とりだした！`);
+  }
+
+  function clearStash() {
+    // stash の objectURL を解放してから消す
+    stashedItems.forEach((item) => {
+      // items にも同じURLが残っている可能性があるので revoke は慎重に
+      const inItems = items.some((i) => i.previewUrl === item.previewUrl);
+      if (!inItems) {
+        URL.revokeObjectURL(item.previewUrl);
+        objectUrls.current.delete(item.previewUrl);
+      }
+      if (item.resultUrl) {
+        const inItemsResult = items.some((i) => i.resultUrl === item.resultUrl);
+        if (!inItemsResult) {
+          URL.revokeObjectURL(item.resultUrl);
+          objectUrls.current.delete(item.resultUrl);
+        }
+      }
+    });
+    setStashedItems([]);
+    logMessage("かばんを 空にした。");
+  }
+
   function castTricom() {
     if (!pendingItems.length) return;
     if (!tryConsumeMp("tricom")) return;
@@ -814,7 +873,8 @@ export function ImageForge() {
     setSavedResultIds([]);
     setSelectedMagic(null);
     setCommandView(null);
-    logMessage("どうぐぶくろを 空にした。");
+    setHokanteSelectedIds([]);
+    logMessage("どうぐぶくろを 空にした。（かばんの中身は のこっている）");
     if (inputRef.current) inputRef.current.value = "";
   }
 
@@ -1261,35 +1321,105 @@ export function ImageForge() {
       />
 
 
-      {commandView === "magic" && selectedMagic === "hokante" && items.length > 0 && (
+      {commandView === "magic" && selectedMagic === "hokante" && (
         <div ref={magicConfigRef} className="game-window p-4 sm:p-6" data-glow={glowTarget === "config" ? true : undefined}>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="game-window-title !mb-0"><PixelIcon name="bag" /> ホカンテ（保存する魔法）：{items.length}枚</h2>
-            <button className="pixel-button danger !min-h-10 !py-1.5 text-xs" type="button" onClick={clearAll}>すべて外す</button>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {items.map((item) => (
-              <article className="quest-card" key={item.id}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.resultUrl ?? item.previewUrl} alt={`${item.file.name}のプレビュー`} />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-bold text-white" title={item.file.name}>{item.file.name}</p>
-                  <p className="mt-1 text-xs text-slate-300">{item.width} × {item.height}px ／ {formatBytes(item.file.size)}</p>
-                  {item.result && (
-                    <p className="mt-1 text-xs text-green-300">→ {formatBytes(item.result.size)} ({Math.round((1 - item.result.size / item.file.size) * 100)}%削減)</p>
-                  )}
-                  {item.backgroundRemoved && <p className="mt-1 flex items-center gap-1 text-xs text-cyan-300"><PixelIcon name="flask" className="inline-icon" />背景透過済み</p>}
-                  {item.error && <p className="mt-1 text-xs text-red-300">{item.error}</p>}
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {item.resultUrl && (
-                      <button className="text-xs text-cyan-300 underline underline-offset-4" type="button" onClick={() => saveOne(item)}>ほぞん</button>
-                    )}
-                    <button className="text-xs text-slate-300 underline underline-offset-4" type="button" onClick={() => removeItem(item.id)}>外す</button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          {/* ── 現在の画像一覧（選択してかばんへ） ── */}
+          {items.length > 0 && (<>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="game-window-title !mb-0"><PixelIcon name="bag" /> ホカンテ（一時ほぞんの魔法）：{items.length}枚</h2>
+              <div className="flex gap-2">
+                <button
+                  className="pixel-button !min-h-10 !py-1.5 text-xs"
+                  type="button"
+                  onClick={() => {
+                    const allIds = items.map((i) => i.id);
+                    const allSelected = allIds.every((id) => hokanteSelectedIds.includes(id));
+                    setHokanteSelectedIds(allSelected ? [] : allIds);
+                  }}
+                >
+                  {items.every((i) => hokanteSelectedIds.includes(i.id)) ? "すべて解除" : "すべて選択"}
+                </button>
+                <button className="pixel-button danger !min-h-10 !py-1.5 text-xs" type="button" onClick={clearAll}>外す</button>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {items.map((item) => {
+                const isSelected = hokanteSelectedIds.includes(item.id);
+                return (
+                  <article
+                    key={item.id}
+                    className="quest-card"
+                    data-selected={isSelected || undefined}
+                    style={{ cursor: "pointer", outline: isSelected ? "2px solid #facc15" : undefined }}
+                    onClick={() =>
+                      setHokanteSelectedIds((ids) =>
+                        ids.includes(item.id) ? ids.filter((id) => id !== item.id) : [...ids, item.id]
+                      )
+                    }
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={item.resultUrl ?? item.previewUrl} alt={`${item.file.name}のプレビュー`} />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-white" title={item.file.name}>{item.file.name}</p>
+                      <p className="mt-1 text-xs text-slate-300">{item.width} × {item.height}px ／ {formatBytes(item.file.size)}</p>
+                      {item.result && (
+                        <p className="mt-1 text-xs text-green-300">→ れんきん済み {formatBytes(item.result.size)}</p>
+                      )}
+                      {item.backgroundRemoved && <p className="mt-1 flex items-center gap-1 text-xs text-cyan-300"><PixelIcon name="flask" className="inline-icon" />背景透過済み</p>}
+                      {item.error && <p className="mt-1 text-xs text-red-300">{item.error}</p>}
+                      <p className="mt-2 text-xs text-yellow-300">{isSelected ? "✓ えらばれた" : "タップして えらぶ"}</p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+            <button
+              className="pixel-button primary mt-4 w-full text-base"
+              type="button"
+              disabled={!hokanteSelectedIds.length}
+              onClick={castHokante}
+            >
+              <PixelIcon name="chest" className="button-icon" />
+              {hokanteSelectedIds.length
+                ? `ホカンテをとなえる（${hokanteSelectedIds.length}まい → かばんへ）`
+                : "画像を えらんでから となえる"}
+            </button>
+            <p className="mt-2 text-xs text-slate-400">かばんに しまった画像は アプリを使っている間 ずっと のこります。いつでも とりだせます。</p>
+          </>)}
+
+          {/* ── ほかんてのかばん（スタッシュ） ── */}
+          {stashedItems.length > 0 && (
+            <div className="mt-6 border-t border-[#5358ac] pt-5">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="game-window-title !mb-0 text-base"><PixelIcon name="chest" /> ほかんてのかばん：{stashedItems.length}まい</h3>
+                <button className="pixel-button danger !min-h-10 !py-1.5 text-xs" type="button" onClick={clearStash}>かばんを 空にする</button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {stashedItems.map((item) => (
+                  <article className="quest-card" key={item.id} style={{ opacity: 0.85 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={item.resultUrl ?? item.previewUrl} alt={`${item.file.name}のプレビュー`} />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-white" title={item.file.name}>{item.file.name}</p>
+                      <p className="mt-1 text-xs text-slate-300">{item.width} × {item.height}px</p>
+                      {item.result && <p className="mt-1 text-xs text-green-300">れんきん済み</p>}
+                      <button
+                        className="mt-2 text-xs text-cyan-300 underline underline-offset-4"
+                        type="button"
+                        onClick={() => retrieveFromStash(item.id)}
+                      >
+                        とりだす
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {items.length === 0 && stashedItems.length === 0 && (
+            <p className="text-sm text-slate-300">まず「トリコム」で 画像を なかまにせよ。</p>
+          )}
         </div>
       )}
 

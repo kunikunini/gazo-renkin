@@ -32,10 +32,11 @@ html {
 
 body {
   margin: 0;
-  background-color: #4f9755;
+  background-color: #5daa62;
   background-image: url("/assets/map-rpg.svg");
   background-repeat: repeat;
   background-size: 384px 384px;
+  background-attachment: fixed;
   image-rendering: pixelated;
   color: var(--foreground);
   font-family: "DotGothic16", sans-serif;
@@ -46,7 +47,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.5) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.14) 100%);
   pointer-events: none;
 }
 

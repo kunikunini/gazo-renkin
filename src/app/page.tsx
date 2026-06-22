@@ -26,8 +26,8 @@ export default function Home() {
 
         <ImageForge />
 
-        <footer className="mt-8 text-center text-xs leading-6 text-slate-400">
-          画像は このブラウザの中だけで処理され、サーバーには送信されません。
+        <footer className="mt-8 border-2 border-white/40 bg-black/75 px-5 py-3 text-center text-xs leading-7 text-slate-100" style={{ boxShadow: "0 0 0 2px rgba(0,0,0,0.6)" }}>
+          🔒 画像は このブラウザの中だけで処理され、サーバーには送信されません。
           <br />
           冒険がおわると、画像データはブラウザから消えます。
         </footer>

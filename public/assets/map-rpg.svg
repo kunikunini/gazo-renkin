@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 384 384" shape-rendering="crispEdges">
   <!-- ===== 草原（ベース） ===== -->
-  <rect width="384" height="384" fill="#4f9755"/>
+  <rect width="384" height="384" fill="#5daa62"/>
 
   <!-- 草テクスチャ：濃淡の点 -->
   <g fill="#3a7240">
@@ -56,12 +56,12 @@
     <!-- 海本体 -->
     <rect x="0" y="0" width="120" height="96" fill="#2f6db8"/>
     <!-- 凸凹の海岸線 -->
-    <rect x="100" y="0" width="20" height="8" fill="#4f9755"/>
-    <rect x="116" y="8" width="4" height="6" fill="#4f9755"/>
-    <rect x="0" y="92" width="40" height="4" fill="#4f9755"/>
-    <rect x="40" y="88" width="32" height="8" fill="#4f9755"/>
-    <rect x="72" y="92" width="48" height="4" fill="#4f9755"/>
-    <rect x="100" y="84" width="20" height="12" fill="#4f9755"/>
+    <rect x="100" y="0" width="20" height="8" fill="#5daa62"/>
+    <rect x="116" y="8" width="4" height="6" fill="#5daa62"/>
+    <rect x="0" y="92" width="40" height="4" fill="#5daa62"/>
+    <rect x="40" y="88" width="32" height="8" fill="#5daa62"/>
+    <rect x="72" y="92" width="48" height="4" fill="#5daa62"/>
+    <rect x="100" y="84" width="20" height="12" fill="#5daa62"/>
     <!-- 波の白いハイライト -->
     <g fill="#a3d2ff">
       <rect x="14" y="22" width="8" height="2"/>
