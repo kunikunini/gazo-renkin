@@ -420,6 +420,45 @@ button:disabled {
   font-family: "DotGothic16", sans-serif;
   font-size: 0.95rem;
   line-height: 1.4;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+/* HP 30%以下：黄色警告 */
+.dq-status[data-hp-status="warning"] {
+  border-color: #ffe53b;
+  animation: hp-warn-pulse 1.6s ease-in-out infinite;
+}
+.dq-status[data-hp-status="warning"] .dq-status-head {
+  border-color: #ffe53b;
+  color: #ffe53b;
+}
+.dq-status[data-hp-status="warning"] .dq-name,
+.dq-status[data-hp-status="warning"] .dq-num {
+  color: #ffe53b;
+}
+
+/* HP 10%以下：赤点滅危険 */
+.dq-status[data-hp-status="danger"] {
+  border-color: #ff6b7f;
+  animation: hp-danger-pulse 0.7s ease-in-out infinite;
+}
+.dq-status[data-hp-status="danger"] .dq-status-head {
+  border-color: #ff6b7f;
+  color: #ff6b7f;
+}
+.dq-status[data-hp-status="danger"] .dq-name,
+.dq-status[data-hp-status="danger"] .dq-num {
+  color: #ff6b7f;
+}
+
+@keyframes hp-warn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 229, 59, 0); }
+  50%       { box-shadow: 0 0 10px 3px rgba(255, 229, 59, 0.55); }
+}
+
+@keyframes hp-danger-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 127, 0); }
+  50%       { box-shadow: 0 0 14px 4px rgba(255, 107, 127, 0.75); }
 }
 
 .dq-status-head,

@@ -5,11 +5,21 @@
   "description": "画像のサイズ変更・形式変換・圧縮を端末内だけで行います。",
   "action": {
     "default_title": "GAZO RENKIN",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon-16.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
   },
   "permissions": [],
   "host_permissions": [],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; worker-src 'self' blob:"
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }

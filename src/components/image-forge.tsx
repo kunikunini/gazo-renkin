@@ -199,6 +199,8 @@ export function ImageForge() {
   // ホカンテ：アプリ内一時保存かばん
   const [stashedItems, setStashedItems] = useState<ImageItem[]>([]);
   const [hokanteSelectedIds, setHokanteSelectedIds] = useState<string[]>([]);
+  // 重複警告
+  const [duplicateWarningFiles, setDuplicateWarningFiles] = useState<string[]>([]);
 
   useEffect(() => {
     const urls = objectUrls.current;
@@ -489,6 +491,10 @@ export function ImageForge() {
   const heroHp = currentHp;
   const heroMp = currentMp;
 
+  // HP警告ステータス
+  const hpPercent = (currentHp / HP_MAX) * 100;
+  const hpStatus = hpPercent <= 10 ? "danger" : hpPercent <= 30 ? "warning" : undefined;
+
   // フェーズ判定
   const phase: RenkinPhase =
     items.length > 0 ? "READY" : pendingItems.length > 0 ? "STAGED" : "INITIAL";
@@ -537,7 +543,19 @@ export function ImageForge() {
 
   async function addFiles(fileList: FileList | File[]) {
     const totalSoFar = items.length + pendingItems.length;
-    const incoming = Array.from(fileList).slice(0, Math.max(0, MAX_FILES - totalSoFar));
+    const allIncoming = Array.from(fileList);
+
+    // れんきん済み画像との重複チェック（name + size で同一ファイルを判定）
+    const renkinDone = items.filter((i) => i.result);
+    const duplicates = allIncoming.filter((f) =>
+      renkinDone.some((i) => i.file.name === f.name && i.file.size === f.size)
+    );
+    if (duplicates.length > 0) {
+      setDuplicateWarningFiles(duplicates.map((f) => f.name));
+      return;
+    }
+
+    const incoming = allIncoming.slice(0, Math.max(0, MAX_FILES - totalSoFar));
     if (!incoming.length) return;
 
     logMessage("画像の ステータスを しらべている…");
@@ -989,7 +1007,7 @@ export function ImageForge() {
     <section id="forge" className="space-y-7" aria-label="画像れんきん所">
       <div className="game-window dq-battle p-3 sm:p-5">
         {/* 上部：パーティーステータス */}
-        <div className="dq-status" role="group" aria-label="パーティーステータス">
+        <div className="dq-status" role="group" aria-label="パーティーステータス" data-hp-status={hpStatus}>
           <div className="dq-status-head" aria-hidden="true">
             <span>なまえ</span>
             <span>LV</span>
@@ -1152,17 +1170,6 @@ export function ImageForge() {
                 <li>
                   <button
                     type="button"
-                    data-active={selectedMagic === "hokante"}
-                    disabled={!canHokante}
-                    title={!canHokante ? "まず トリコムで取り込んでから" : undefined}
-                    onClick={() => selectMagicAndScroll("hokante")}
-                  >
-                    <span>ホカンテ</span><small>保存する魔法</small>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
                     data-active={selectedMagic === "resize"}
                     disabled={!canResize}
                     title={!canResize ? "まず トリコムで取り込んでから" : undefined}
@@ -1191,6 +1198,17 @@ export function ImageForge() {
                     onClick={() => selectMagicAndScroll("transparent")}
                   >
                     <span>スケル</span><small>背景透過</small>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    data-active={selectedMagic === "hokante"}
+                    disabled={!canHokante}
+                    title={!canHokante ? "まず トリコムで取り込んでから" : undefined}
+                    onClick={() => selectMagicAndScroll("hokante")}
+                  >
+                    <span>ホカンテ</span><small>一時ほぞん</small>
                   </button>
                 </li>
                 <li>
@@ -1622,6 +1640,28 @@ export function ImageForge() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {duplicateWarningFiles.length > 0 && (
+        <div className="dialog-backdrop" role="presentation">
+          <div className="warning-dialog" role="dialog" aria-modal="true" aria-labelledby="dup-title">
+            <h2 id="dup-title">⚠ すでに れんきん済みだ！</h2>
+            <p>以下の画像は すでに れんきんされている。<br />おなじ画像を もういちど えらぶことは できない。</p>
+            <ul className="mt-3 space-y-1 text-sm text-yellow-300">
+              {duplicateWarningFiles.map((name) => (
+                <li key={name} className="truncate">・{name}</li>
+              ))}
+            </ul>
+            <p className="mt-3 text-xs text-slate-300">べつの画像を えらぶか、「すべて外す」で リセットしてから えらびなおせ。</p>
+            <button
+              className="pixel-button primary mt-4 w-full"
+              type="button"
+              onClick={() => setDuplicateWarningFiles([])}
+            >
+              わかった
+            </button>
+          </div>
         </div>
       )}
 

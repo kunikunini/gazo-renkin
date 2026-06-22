@@ -1,57 +1,188 @@
 <!doctype html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <title>GAZO RENKIN</title>
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-    <main>
-      <header class="hero">
-        <span class="flask" aria-hidden="true">⚗️</span>
-        <p>IMAGE ALCHEMY</p>
-        <h1><span>GAZO</span> <strong>RENKIN</strong></h1>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>GAZO RENKIN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main>
+    <header class="dq-header">
+      <p class="kicker">IMAGE ALCHEMY TOOL</p>
+      <h1><span>GAZO</span> <strong>RENKIN</strong></h1>
+    </header>
 
-      <section class="window" aria-labelledby="select-title">
-        <h2 id="select-title">✦ 1. 画像を なかまにする</h2>
-        <label class="file-button" for="images">▶ 画像を えらぶ</label>
-        <input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple />
-        <p class="hint">JPEG・PNG・WebP・HEIC ／ 最大25枚</p>
-        <div id="file-summary" class="message" aria-live="polite">まだ画像は ありません。</div>
-      </section>
+    <!-- バトルウィンドウ -->
+    <div class="game-window dq-battle">
 
-      <section class="window" aria-labelledby="settings-title">
-        <h2 id="settings-title">🛡 2. れんきんの さくせん</h2>
-        <div class="dimensions">
-          <label>幅（px）<input id="width" type="number" min="1" max="16384" value="1200" /></label>
-          <span>×</span>
-          <label>高さ（px）<input id="height" type="number" min="1" max="16384" value="800" disabled /></label>
+      <!-- ステータスバー -->
+      <div class="dq-status" id="dq-status">
+        <div class="status-head">
+          <span>なまえ</span><span>LV</span><span>HP</span><span>MP</span>
         </div>
-        <label class="check"><input id="keep-ratio" type="checkbox" checked /> 縦横比を まもる</label>
-        <label>出力形式
-          <select id="format">
-            <option value="image/webp">WebP（おすすめ）</option>
-            <option value="image/jpeg">JPEG</option>
-            <option value="image/png">PNG</option>
-          </select>
-        </label>
-        <label>画質：<output id="quality-value">82</output>
-          <input id="quality" type="range" min="20" max="100" value="82" />
-        </label>
-        <button id="forge" class="primary" type="button" disabled>▶ 画像を れんきんする</button>
-      </section>
+        <div class="status-row">
+          <span class="s-name" id="s-name">?????</span>
+          <span class="s-num" id="s-lv"> 1</span>
+          <span class="s-num" id="s-hp">1080</span>
+          <span class="s-num" id="s-mp"> 80</span>
+        </div>
+      </div>
 
-      <section class="window" aria-labelledby="result-title">
-        <h2 id="result-title">🏆 3. せいせいけっか</h2>
-        <div class="progress" role="progressbar" aria-label="処理進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar"></span></div>
-        <div id="status" class="message" aria-live="polite">▶ 画像をえらぶと 準備がはじまります。</div>
-      </section>
+      <!-- バトルステージ -->
+      <div class="dq-stage" id="dq-stage">
+        <div class="dq-enemies" id="dq-enemies">
+          <div class="dq-enemy" data-kind="ghost">
+            <div class="enemy-ghost">👾</div>
+            <div class="enemy-label">?????</div>
+          </div>
+        </div>
+        <p class="stage-pending" id="stage-pending" hidden></p>
+      </div>
 
-      <footer>画像は外部送信されません。</footer>
-    </main>
-    <script src="popup.js"></script>
-  </body>
+      <!-- コマンド + サブメニュー -->
+      <div class="dq-bottom">
+        <div class="dq-command-box">
+          <p class="cmd-name" id="cmd-name">?????</p>
+          <ul class="dq-command-list">
+            <li><button type="button" id="cmd-battle">たたかう</button></li>
+            <li><button type="button" id="cmd-magic" disabled>まほう<small class="toggle"> ▶</small></button></li>
+            <li><button type="button" id="cmd-defend" disabled>ぼうぎょ<small class="toggle"> ▶</small></button></li>
+            <li><button type="button" id="cmd-escape">にげる<small class="toggle"> ▶</small></button></li>
+          </ul>
+        </div>
+
+        <!-- まほうサブメニュー -->
+        <div class="dq-submenu-card" id="submenu-magic" hidden>
+          <p class="submenu-title">まほう</p>
+          <ul class="submenu-list">
+            <li><button type="button" id="spell-tricom" disabled><span>トリコム</span><small>仲間にする</small></button></li>
+            <li><button type="button" id="spell-resize" disabled><span>サイチェン</span><small>サイズ変更</small></button></li>
+            <li><button type="button" id="spell-format" disabled><span>フォマカル</span><small>形式・圧縮</small></button></li>
+            <li><button type="button" id="spell-transparent" disabled><span>スケル</span><small>背景透過</small></button></li>
+            <li><button type="button" id="spell-hokante" disabled><span>ホカンテ</span><small>一時ほぞん</small></button></li>
+            <li><button type="button" id="spell-polpunte" disabled><span>ポルプンテ</span><small>謎の変化</small></button></li>
+          </ul>
+        </div>
+
+        <!-- ぼうぎょサブメニュー -->
+        <div class="dq-submenu-card" id="submenu-save" hidden>
+          <p class="submenu-title">ぼうぎょ</p>
+          <ul class="submenu-list">
+            <li><button type="button" id="save-zip" disabled>ZIPで まとめてほぞん</button></li>
+            <li><button type="button" id="save-all" disabled>1まいずつ ほぞん</button></li>
+          </ul>
+        </div>
+
+        <!-- にげるサブメニュー -->
+        <div class="dq-submenu-card" id="submenu-escape" hidden>
+          <p class="submenu-title">にげる</p>
+          <ul class="submenu-list">
+            <li><button type="button" id="escape-yes">はい（ウィンドウを とじる）</button></li>
+            <li><button type="button" id="escape-no">いいえ</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- バトルログ -->
+      <div class="dq-log" id="dq-log" role="log" aria-live="polite">
+        <p>「たたかう」で れんきんしたい画像を えらぶのだ！</p>
+      </div>
+    </div>
+
+    <!-- 設定パネル：サイチェン -->
+    <div class="game-window config-panel" id="config-resize" hidden>
+      <h2 class="config-title">📐 サイチェン（サイズ変更）</h2>
+      <div class="size-grid">
+        <label>幅（px）<input type="number" id="width" min="1" max="16384" value="1200" /></label>
+        <span class="times">×</span>
+        <label>高さ（px）<input type="number" id="height" min="1" max="16384" value="800" disabled /></label>
+      </div>
+      <label class="check-label"><input type="checkbox" id="keep-ratio" checked /> 縦横比を まもる</label>
+      <button class="pixel-btn primary" type="button" id="do-resize">サイチェンを となえる</button>
+    </div>
+
+    <!-- 設定パネル：フォマカル -->
+    <div class="game-window config-panel" id="config-format" hidden>
+      <h2 class="config-title">✨ フォマカル（形式変換・圧縮）</h2>
+      <label>出力形式
+        <select id="format">
+          <option value="image/webp">WebP（おすすめ）</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/png">PNG</option>
+        </select>
+      </label>
+      <label>画質：<output id="quality-value">82</output>%
+        <input type="range" id="quality" min="20" max="100" value="82" />
+      </label>
+      <p class="hint-text" id="format-note" hidden>PNGは画質を下げずに保存します。</p>
+      <button class="pixel-btn primary" type="button" id="do-format">フォマカルを となえる</button>
+    </div>
+
+    <!-- 設定パネル：スケル -->
+    <div class="game-window config-panel" id="config-transparent" hidden>
+      <h2 class="config-title">🌫️ スケル（背景透過）</h2>
+      <label>透過範囲：<strong id="sensitivity-label">標準</strong>
+        <input type="range" id="sensitivity" min="5" max="90" value="38" />
+      </label>
+      <p class="hint-text">四隅から背景色を判定します。残る場合は「広め」、消えすぎる場合は「厳密」に。出力はPNGになります。</p>
+      <button class="pixel-btn primary" type="button" id="do-transparent">スケルを となえる</button>
+    </div>
+
+    <!-- 設定パネル：ホカンテ -->
+    <div class="game-window config-panel" id="config-hokante" hidden>
+      <div class="config-header">
+        <h2 class="config-title">🧳 ホカンテ（一時ほぞん）</h2>
+        <button class="small-btn" type="button" id="hokante-select-all">すべて選択</button>
+      </div>
+      <div id="hokante-list" class="item-list"></div>
+      <button class="pixel-btn primary" type="button" id="do-hokante" disabled>ホカンテをとなえる</button>
+      <p class="hint-text">かばんに しまった画像は このセッション中ずっと のこります。いつでも とりだせます。</p>
+      <div id="stash-section" hidden>
+        <div class="stash-header">
+          <p class="stash-title">📦 ほかんてのかばん</p>
+          <button class="small-btn danger" type="button" id="clear-stash">かばんを空に</button>
+        </div>
+        <div id="stash-list" class="item-list"></div>
+      </div>
+    </div>
+
+    <!-- 設定パネル：ポルプンテ -->
+    <div class="game-window config-panel mystery-window" id="config-polpunte" hidden>
+      <h2 class="config-title mystery-title">🔮 ポルプンテ（謎の変化を呼ぶ謎の魔法）</h2>
+      <p class="mystery-desc">添付画像を予想不能な別世界へ導く「復活の呪文」を生み出します。</p>
+      <button class="pixel-btn mystery-btn" type="button" id="do-polpunte">ポルプンテをとなえる</button>
+      <div id="revival-section" hidden>
+        <p class="revival-label">復活の呪文</p>
+        <textarea id="revival-spell" readonly rows="5"></textarea>
+        <button class="pixel-btn" type="button" id="copy-revival">復活の呪文をコピー</button>
+        <p class="hint-text">元画像を生成AIに添付し、この英語の呪文を貼り付けて実行してください。</p>
+      </div>
+    </div>
+
+    <!-- 処理中オーバーレイ -->
+    <div class="processing-overlay" id="processing-overlay" hidden>
+      <p class="processing-msg" id="processing-msg">れんきん中…</p>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    </div>
+
+    <!-- 重複警告 -->
+    <div class="inline-warning" id="dup-warning" hidden>
+      <p class="warn-title">⚠ すでに れんきん済みだ！</p>
+      <div id="dup-files" class="dup-list"></div>
+      <p class="hint-text">べつの画像を えらぶか、すべて外してから えらびなおせ。</p>
+      <button class="pixel-btn" type="button" id="dup-ok">わかった</button>
+    </div>
+
+    <footer>🔒 画像はこのブラウザ内だけで処理されます。外部送信されません。</footer>
+  </main>
+
+  <input type="file" id="images"
+    accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+    multiple hidden />
+  <script src="popup.js"></script>
+</body>
 </html>
