@@ -21,7 +21,7 @@ await build({
 });
 
 await Promise.all(
-  ["manifest.json", "popup.html", "popup.css"].map((fileName) =>
+  ["manifest.json", "popup.html", "popup.css", "icon-16.png", "icon-48.png", "icon-128.png"].map((fileName) =>
     copyFile(
       resolve(extensionRoot, "public", fileName),
       resolve(outputDirectory, fileName),
