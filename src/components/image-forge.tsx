@@ -1154,11 +1154,14 @@ export function ImageForge() {
                   data-next={nextStep === "save"}
                   title={!canDefend ? "まず「トリコム」で画像を なかまにせよ" : undefined}
                   onClick={() => {
-                    if (commandView === "save") {
+                    if (commandView === "save" && !completed.length) {
+                      // 結果がまだない場合だけ閉じる（iPhoneで誤タップで閉まらないように）
                       setCommandView(null);
                     } else {
                       setCommandView("save");
-                      logMessage(`${heroName || "ゆうしゃ"}は ぼうぎょの たいせいに 入った…`);
+                      if (commandView !== "save") {
+                        logMessage(`${heroName || "ゆうしゃ"}は ぼうぎょの たいせいに 入った…`);
+                      }
                     }
                   }}
                 >

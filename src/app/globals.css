@@ -661,6 +661,7 @@ button:disabled {
   position: relative;
   display: block;
   width: 100%;
+  min-height: 44px;
   padding: 0.3rem 0.35rem 0.3rem 1.1rem;
   border: none;
   background: transparent;
@@ -669,6 +670,8 @@ button:disabled {
   font-size: 0.95rem;
   letter-spacing: 0.08em;
   text-align: left;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dq-command-list button::before {
