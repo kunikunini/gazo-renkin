@@ -181,6 +181,7 @@ export function ImageForge() {
   const [heroName, setHeroName] = useState<string>("");
   const [heroNameLoaded, setHeroNameLoaded] = useState(false);
   const [pendingHeroName, setPendingHeroName] = useState("");
+  const [showSplash, setShowSplash] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const objectUrls = useRef(new Set<string>());
   const magicConfigRef = useRef<HTMLDivElement>(null);
@@ -1695,6 +1696,29 @@ export function ImageForge() {
               onClick={() => setDuplicateWarningFiles([])}
             >
               わかった
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showSplash && (
+        <div className="splash-backdrop" role="presentation" aria-label="タイトル画面">
+          <div className="splash-inner">
+            <p className="pixel-kicker splash-kicker">ブラウザ だけで できる！</p>
+            <div className="logo-title splash-title">
+              <span>GAZO</span>
+              <strong>RENKIN</strong>
+            </div>
+            <p className="splash-sub">画像を 軽く・美しく 変える 冒険</p>
+            <button
+              className="splash-start-btn"
+              type="button"
+              onClick={() => {
+                ensureAudioContext();
+                setShowSplash(false);
+              }}
+            >
+              ▶ 冒険をはじめる
             </button>
           </div>
         </div>
