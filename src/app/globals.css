@@ -1218,7 +1218,7 @@ select:focus-visible {
   padding: 0.75rem;
 }
 
-.quest-card img {
+.quest-card > img {
   height: 72px;
   width: 72px;
   border: 2px solid white;
@@ -1476,7 +1476,7 @@ select:focus-visible {
     grid-template-columns: 56px 1fr;
   }
 
-  .quest-card img {
+  .quest-card > img {
     height: 56px;
     width: 56px;
   }
