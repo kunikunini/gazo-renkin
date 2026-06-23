@@ -15,38 +15,9 @@
 body {
   width: 400px;
   background-color: #5daa62;
-  background-image: url('map-rpg.svg');
-  background-size: cover;
-  background-position: center;
   color: #ffffff;
   font-family: "DotGothic16", monospace, sans-serif;
   font-size: 0.85rem;
-}
-
-/* ── 名前入力モーダル ── */
-.dialog-backdrop {
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,0.82);
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-}
-.name-dialog {
-  border: 3px solid #ffffff;
-  border-radius: 10px;
-  background: linear-gradient(145deg, rgba(73,7,21,0.98), rgba(22,2,8,0.98));
-  box-shadow: 0 0 0 3px #777, 0 0 0 5px #050505;
-  padding: 20px 18px;
-  display: flex; flex-direction: column; gap: 12px;
-  width: 100%;
-}
-.name-dialog-title { font-size: 1rem; color: var(--yellow); }
-.name-dialog-desc { font-size: 0.78rem; line-height: 1.7; color: #e5e5e5; }
-.name-label { display: flex; flex-direction: column; gap: 6px; font-size: 0.72rem; color: #cbd5e1; }
-.name-input {
-  width: 100%; border: 2px solid var(--yellow); border-radius: 3px;
-  background: #000; color: var(--yellow); font-family: inherit;
-  font-size: 1rem; padding: 8px 10px; letter-spacing: 0.1em;
-  outline: none;
 }
 
 main {

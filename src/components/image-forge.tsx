@@ -15,7 +15,7 @@ import {
 const HERO_NAME_KEY = "gazo-renkin:hero-name";
 const HERO_NAME_MAX = 6;
 const SOUND_MUTED_KEY = "gazo-renkin:muted";
-const BGM_TRACKS = ["/BGM1.mp3", "/BGM2.wav", "/BGM3.mp3", "/BGM4.wav"];
+const BGM_TRACKS = ["/BGM3.mp3", "/BGM2.wav", "/BGM1.mp3", "/BGM4.wav"];
 const BGM_VOLUME = 0.075;
 const TYPE_INTERVAL_MS = 38; // 1文字あたり
 const BEEP_EVERY = 2; // 何文字おきにビープを鳴らすか
