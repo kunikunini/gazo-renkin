@@ -498,6 +498,33 @@ async function addFiles(fileList: FileList | File[]) {
 try { heroName = localStorage.getItem(HERO_NAME_KEY) ?? ""; } catch { heroName = ""; }
 render();
 
+// ── 名前入力モーダル ──────────────────────────────────────────────────────────
+const nameModal       = $<HTMLDivElement>("name-modal");
+const heroNameInput   = $<HTMLInputElement>("hero-name-input");
+const heroNameSubmit  = $<HTMLButtonElement>("hero-name-submit");
+
+function showNameModal() {
+  nameModal.hidden = false;
+  window.setTimeout(() => heroNameInput.focus(), 50);
+}
+
+function submitHeroName() {
+  const name = heroNameInput.value.trim().slice(0, 6);
+  if (!name) { heroNameInput.focus(); return; }
+  heroName = name;
+  try { localStorage.setItem(HERO_NAME_KEY, heroName); } catch { /* ignore */ }
+  nameModal.hidden = true;
+  log(`ゆうしゃ「${heroName}」の 冒険が はじまった！`);
+  render();
+}
+
+heroNameSubmit.addEventListener("click", submitHeroName);
+heroNameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submitHeroName();
+});
+
+if (!heroName) showNameModal();
+
 // ── イベント：ファイル選択 ────────────────────────────────────────────────────
 fileInput.addEventListener("change", () => {
   if (fileInput.files) void addFiles(fileInput.files);
