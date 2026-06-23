@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 384 384" shape-rendering="crispEdges">
+  <!-- ===== 草原（ベース） ===== -->
+  <rect width="384" height="384" fill="#5daa62"/>
+
+  <!-- 草テクスチャ：濃淡の点 -->
+  <g fill="#3a7240">
+    <rect x="20" y="34" width="2" height="2"/>
+    <rect x="56" y="62" width="2" height="2"/>
+    <rect x="108" y="22" width="2" height="2"/>
+    <rect x="150" y="60" width="2" height="2"/>
+    <rect x="208" y="14" width="2" height="2"/>
+    <rect x="264" y="46" width="2" height="2"/>
+    <rect x="332" y="26" width="2" height="2"/>
+    <rect x="20" y="120" width="2" height="2"/>
+    <rect x="72" y="140" width="2" height="2"/>
+    <rect x="142" y="116" width="2" height="2"/>
+    <rect x="226" y="138" width="2" height="2"/>
+    <rect x="296" y="120" width="2" height="2"/>
+    <rect x="368" y="142" width="2" height="2"/>
+    <rect x="32" y="232" width="2" height="2"/>
+    <rect x="84" y="262" width="2" height="2"/>
+    <rect x="178" y="232" width="2" height="2"/>
+    <rect x="236" y="270" width="2" height="2"/>
+    <rect x="312" y="240" width="2" height="2"/>
+    <rect x="356" y="312" width="2" height="2"/>
+    <rect x="44" y="340" width="2" height="2"/>
+    <rect x="132" y="356" width="2" height="2"/>
+    <rect x="218" y="330" width="2" height="2"/>
+    <rect x="288" y="352" width="2" height="2"/>
+  </g>
+  <g fill="#67b06d">
+    <rect x="36" y="58" width="2" height="2"/>
+    <rect x="124" y="46" width="2" height="2"/>
+    <rect x="190" y="32" width="2" height="2"/>
+    <rect x="246" y="78" width="2" height="2"/>
+    <rect x="312" y="60" width="2" height="2"/>
+    <rect x="58" y="92" width="2" height="2"/>
+    <rect x="104" y="124" width="2" height="2"/>
+    <rect x="170" y="148" width="2" height="2"/>
+    <rect x="250" y="118" width="2" height="2"/>
+    <rect x="332" y="156" width="2" height="2"/>
+    <rect x="56" y="200" width="2" height="2"/>
+    <rect x="124" y="222" width="2" height="2"/>
+    <rect x="208" y="186" width="2" height="2"/>
+    <rect x="278" y="224" width="2" height="2"/>
+    <rect x="346" y="208" width="2" height="2"/>
+    <rect x="22" y="288" width="2" height="2"/>
+    <rect x="98" y="318" width="2" height="2"/>
+    <rect x="170" y="296" width="2" height="2"/>
+    <rect x="260" y="316" width="2" height="2"/>
+    <rect x="328" y="296" width="2" height="2"/>
+  </g>
+
+  <!-- ===== 海（左上） ===== -->
+  <g>
+    <!-- 海本体 -->
+    <rect x="0" y="0" width="120" height="96" fill="#2f6db8"/>
+    <!-- 凸凹の海岸線 -->
+    <rect x="100" y="0" width="20" height="8" fill="#5daa62"/>
+    <rect x="116" y="8" width="4" height="6" fill="#5daa62"/>
+    <rect x="0" y="92" width="40" height="4" fill="#5daa62"/>
+    <rect x="40" y="88" width="32" height="8" fill="#5daa62"/>
+    <rect x="72" y="92" width="48" height="4" fill="#5daa62"/>
+    <rect x="100" y="84" width="20" height="12" fill="#5daa62"/>
+    <!-- 波の白いハイライト -->
+    <g fill="#a3d2ff">
+      <rect x="14" y="22" width="8" height="2"/>
+      <rect x="44" y="36" width="10" height="2"/>
+      <rect x="76" y="20" width="8" height="2"/>
+      <rect x="22" y="58" width="10" height="2"/>
+      <rect x="56" y="70" width="8" height="2"/>
+      <rect x="88" y="50" width="10" height="2"/>
+    </g>
+    <g fill="#5a9aef">
+      <rect x="8" y="40" width="14" height="2"/>
+      <rect x="34" y="12" width="14" height="2"/>
+      <rect x="62" y="52" width="14" height="2"/>
+      <rect x="90" y="32" width="14" height="2"/>
+    </g>
+  </g>
+
+  <!-- ===== 山脈（右上、雪冠あり） ===== -->
+  <g>
+    <!-- 山1（メイン・大きい） -->
+    <polygon points="296,34 360,114 232,114" fill="#5e5e6b"/>
+    <polygon points="296,34 360,114 296,114" fill="#3f3f48"/>
+    <!-- 雪冠 -->
+    <polygon points="296,48 320,80 272,80" fill="#ffffff"/>
+    <polygon points="296,48 320,80 296,80" fill="#d8e0ee"/>
+
+    <!-- 山2（左隣・少し小さい） -->
+    <polygon points="244,60 290,114 198,114" fill="#5e5e6b"/>
+    <polygon points="244,60 290,114 244,114" fill="#3f3f48"/>
+    <polygon points="244,72 262,94 226,94" fill="#ffffff"/>
+
+    <!-- 山3（右端） -->
+    <polygon points="360,70 384,114 336,114" fill="#5e5e6b"/>
+    <polygon points="360,70 384,114 360,114" fill="#3f3f48"/>
+  </g>
+
+  <!-- ===== 森（中央下） ===== -->
+  <g>
+    <!-- 木1 -->
+    <rect x="150" y="194" width="14" height="14" fill="#2f5e36"/>
+    <rect x="148" y="196" width="2" height="10" fill="#2f5e36"/>
+    <rect x="164" y="196" width="2" height="10" fill="#2f5e36"/>
+    <rect x="152" y="192" width="10" height="2" fill="#2f5e36"/>
+    <rect x="154" y="200" width="6" height="4" fill="#1f4a2a"/>
+    <rect x="156" y="208" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木2 -->
+    <rect x="172" y="204" width="14" height="14" fill="#2f5e36"/>
+    <rect x="170" y="206" width="2" height="10" fill="#2f5e36"/>
+    <rect x="186" y="206" width="2" height="10" fill="#2f5e36"/>
+    <rect x="174" y="202" width="10" height="2" fill="#2f5e36"/>
+    <rect x="176" y="210" width="6" height="4" fill="#1f4a2a"/>
+    <rect x="178" y="218" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木3 -->
+    <rect x="196" y="198" width="14" height="14" fill="#2f5e36"/>
+    <rect x="194" y="200" width="2" height="10" fill="#2f5e36"/>
+    <rect x="210" y="200" width="2" height="10" fill="#2f5e36"/>
+    <rect x="198" y="196" width="10" height="2" fill="#2f5e36"/>
+    <rect x="200" y="204" width="6" height="4" fill="#1f4a2a"/>
+    <rect x="202" y="212" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木4 -->
+    <rect x="218" y="208" width="14" height="14" fill="#2f5e36"/>
+    <rect x="216" y="210" width="2" height="10" fill="#2f5e36"/>
+    <rect x="232" y="210" width="2" height="10" fill="#2f5e36"/>
+    <rect x="220" y="206" width="10" height="2" fill="#2f5e36"/>
+    <rect x="222" y="214" width="6" height="4" fill="#1f4a2a"/>
+    <rect x="224" y="222" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木5 -->
+    <rect x="184" y="222" width="14" height="14" fill="#2f5e36"/>
+    <rect x="182" y="224" width="2" height="10" fill="#2f5e36"/>
+    <rect x="198" y="224" width="2" height="10" fill="#2f5e36"/>
+    <rect x="186" y="220" width="10" height="2" fill="#2f5e36"/>
+    <rect x="188" y="228" width="6" height="4" fill="#1f4a2a"/>
+    <rect x="190" y="236" width="2" height="6" fill="#5a3a20"/>
+  </g>
+
+  <!-- ===== 岩山（右下、茶色系） ===== -->
+  <g>
+    <!-- 岩山1 -->
+    <polygon points="298,300 340,250 382,300" fill="#a17a52"/>
+    <polygon points="298,300 340,250 340,300" fill="#7a5a36"/>
+    <polygon points="340,260 358,290 322,290" fill="#bb9a72"/>
+
+    <!-- 岩山2 -->
+    <polygon points="262,310 296,270 330,310" fill="#a17a52"/>
+    <polygon points="262,310 296,270 296,310" fill="#7a5a36"/>
+
+    <!-- 散らばった岩 -->
+    <rect x="248" y="316" width="6" height="6" fill="#7a5a36"/>
+    <rect x="362" y="310" width="6" height="6" fill="#7a5a36"/>
+    <rect x="356" y="322" width="4" height="4" fill="#a17a52"/>
+    <rect x="276" y="328" width="4" height="4" fill="#7a5a36"/>
+  </g>
+
+  <!-- ===== 一本木（散在） ===== -->
+  <g>
+    <!-- 木A：左中央 -->
+    <rect x="62" y="160" width="12" height="12" fill="#2f5e36"/>
+    <rect x="60" y="162" width="2" height="8" fill="#2f5e36"/>
+    <rect x="74" y="162" width="2" height="8" fill="#2f5e36"/>
+    <rect x="64" y="158" width="8" height="2" fill="#2f5e36"/>
+    <rect x="66" y="164" width="4" height="4" fill="#1f4a2a"/>
+    <rect x="67" y="172" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木B：右中央 -->
+    <rect x="306" y="166" width="12" height="12" fill="#2f5e36"/>
+    <rect x="304" y="168" width="2" height="8" fill="#2f5e36"/>
+    <rect x="318" y="168" width="2" height="8" fill="#2f5e36"/>
+    <rect x="308" y="164" width="8" height="2" fill="#2f5e36"/>
+    <rect x="310" y="170" width="4" height="4" fill="#1f4a2a"/>
+    <rect x="311" y="178" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木C：左下 -->
+    <rect x="92" y="318" width="12" height="12" fill="#2f5e36"/>
+    <rect x="90" y="320" width="2" height="8" fill="#2f5e36"/>
+    <rect x="104" y="320" width="2" height="8" fill="#2f5e36"/>
+    <rect x="94" y="316" width="8" height="2" fill="#2f5e36"/>
+    <rect x="96" y="322" width="4" height="4" fill="#1f4a2a"/>
+    <rect x="97" y="330" width="2" height="6" fill="#5a3a20"/>
+
+    <!-- 木D：中央上 -->
+    <rect x="170" y="40" width="12" height="12" fill="#2f5e36"/>
+    <rect x="168" y="42" width="2" height="8" fill="#2f5e36"/>
+    <rect x="182" y="42" width="2" height="8" fill="#2f5e36"/>
+    <rect x="172" y="38" width="8" height="2" fill="#2f5e36"/>
+    <rect x="174" y="44" width="4" height="4" fill="#1f4a2a"/>
+    <rect x="175" y="52" width="2" height="6" fill="#5a3a20"/>
+  </g>
+
+  <!-- ===== 道（中央を斜めに通る） ===== -->
+  <g fill="#c9a877">
+    <rect x="120" y="148" width="40" height="6"/>
+    <rect x="156" y="142" width="40" height="6"/>
+    <rect x="192" y="148" width="40" height="6"/>
+    <rect x="228" y="156" width="40" height="6"/>
+    <rect x="264" y="166" width="40" height="6"/>
+  </g>
+  <g fill="#a3865a">
+    <rect x="120" y="154" width="40" height="2"/>
+    <rect x="156" y="148" width="40" height="2"/>
+    <rect x="192" y="154" width="40" height="2"/>
+    <rect x="228" y="162" width="40" height="2"/>
+    <rect x="264" y="172" width="40" height="2"/>
+  </g>
+</svg>

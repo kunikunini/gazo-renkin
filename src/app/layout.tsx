@@ -16,6 +16,9 @@ export default function RootLayout({
   return (
     <html lang="ja" className="h-full antialiased">
       <head>
+        <link rel="icon" type="image/png" href="/icons/app-icon-192.png" sizes="192x192" />
+        <link rel="icon" type="image/png" href="/icons/icon-512.png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" sizes="180x180" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
