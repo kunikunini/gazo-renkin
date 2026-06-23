@@ -1422,7 +1422,7 @@ export function ImageForge() {
                       {item.result && (
                         <p className="mt-1 text-xs text-green-300">→ れんきん済み {formatBytes(item.result.size)}</p>
                       )}
-                      {item.backgroundRemoved && <p className="mt-1 flex items-center gap-1 text-xs text-cyan-300"><PixelIcon name="flask" className="inline-icon" />背景透過済み</p>}
+                      {item.backgroundRemoved && <p className="mt-1 text-xs text-cyan-300">背景透過済み</p>}
                       {item.error && <p className="mt-1 text-xs text-red-300">{item.error}</p>}
                       <p className="mt-2 text-xs text-yellow-300">{isSelected ? "✓ えらばれた" : "タップして えらぶ"}</p>
                     </div>
