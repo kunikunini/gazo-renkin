@@ -15,6 +15,8 @@ import {
 const HERO_NAME_KEY = "gazo-renkin:hero-name";
 const HERO_NAME_MAX = 6;
 const SOUND_MUTED_KEY = "gazo-renkin:muted";
+const BGM_TRACKS = ["/BGM1.mp3", "/BGM2.mp3"];
+const BGM_VOLUME = 0.15;
 const TYPE_INTERVAL_MS = 38; // 1文字あたり
 const BEEP_EVERY = 2; // 何文字おきにビープを鳴らすか
 const HP_MAX = 1080;
@@ -184,6 +186,9 @@ export function ImageForge() {
   const magicConfigRef = useRef<HTMLDivElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const typingTimerRef = useRef<number | null>(null);
+  const bgmRef = useRef<HTMLAudioElement | null>(null);
+  const bgmIndexRef = useRef(0);
+  const bgmStarted = useRef(false);
   const [typedIndex, setTypedIndex] = useState(0);
   const [isSoundMuted, setIsSoundMuted] = useState(false);
   // バトルステータス
@@ -251,6 +256,16 @@ export function ImageForge() {
     }
   }, []);
 
+  // BGM ミュート同期
+  useEffect(() => {
+    if (!bgmRef.current) return;
+    if (isSoundMuted) {
+      bgmRef.current.pause();
+    } else {
+      void bgmRef.current.play().catch(() => {});
+    }
+  }, [isSoundMuted]);
+
   function toggleSound() {
     setIsSoundMuted((prev) => {
       const next = !prev;
@@ -281,7 +296,27 @@ export function ImageForge() {
     if (audioCtxRef.current?.state === "suspended") {
       void audioCtxRef.current.resume();
     }
+    // BGM初回起動
+    startBgm();
     return audioCtxRef.current;
+  }
+
+  function playBgmTrack(index: number) {
+    bgmIndexRef.current = index;
+    const audio = new Audio(BGM_TRACKS[index]);
+    audio.volume = BGM_VOLUME;
+    bgmRef.current = audio;
+    audio.addEventListener("ended", () => {
+      const next = (bgmIndexRef.current + 1) % BGM_TRACKS.length;
+      playBgmTrack(next);
+    });
+    void audio.play().catch(() => {});
+  }
+
+  function startBgm() {
+    if (bgmStarted.current) return;
+    bgmStarted.current = true;
+    playBgmTrack(0);
   }
 
   // DQ風「ピポン」（短い矩形波 + 少しのピッチ揺らぎ）
