@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: "GAZO RENKIN｜画像を軽く、美しく",
   description:
     "画像のサイズ変更・形式変換・圧縮をブラウザ内だけで行う、冒険仕立ての画像ツール。",
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icons/app-icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: { url: "/icons/apple-icon-180.png", sizes: "180x180", type: "image/png" },
-  },
 };
 
 export default function RootLayout({
