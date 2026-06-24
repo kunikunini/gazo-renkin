@@ -16,7 +16,7 @@ const HERO_NAME_KEY = "gazo-renkin:hero-name";
 const HERO_NAME_MAX = 6;
 const SOUND_MUTED_KEY = "gazo-renkin:muted";
 const BGM_TRACKS = ["/BGM3.mp3", "/BGM2.wav", "/BGM1.mp3", "/BGM4.wav"];
-const BGM_VOLUME = 0.075;
+const BGM_VOLUME = 0.04;
 const TYPE_INTERVAL_MS = 38; // 1文字あたり
 const BEEP_EVERY = 2; // 何文字おきにビープを鳴らすか
 const HP_MAX = 1080;
@@ -145,11 +145,24 @@ function createRevivalSpell() {
   ].join(" ");
 }
 
+function isIOS() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
 function triggerDownload(url: string, name: string) {
+  if (isIOS()) {
+    // iOS Safari は blob URL の download 属性未対応のため新タブで開く
+    // → ユーザーが長押し「イメージを保存」で保存できる
+    window.open(url, "_blank");
+    return;
+  }
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = name;
+  anchor.style.display = "none";
+  document.body.appendChild(anchor);
   anchor.click();
+  document.body.removeChild(anchor);
 }
 
 function sourceOutputFormat(item: ImageItem): OutputFormat {
@@ -302,22 +315,22 @@ export function ImageForge() {
     return audioCtxRef.current;
   }
 
-  function playBgmTrack(index: number) {
-    bgmIndexRef.current = index;
-    const audio = new Audio(BGM_TRACKS[index]);
-    audio.volume = BGM_VOLUME;
-    bgmRef.current = audio;
-    audio.addEventListener("ended", () => {
-      const next = (bgmIndexRef.current + 1) % BGM_TRACKS.length;
-      playBgmTrack(next);
-    });
-    void audio.play().catch(() => {});
-  }
-
   function startBgm() {
     if (bgmStarted.current) return;
     bgmStarted.current = true;
-    playBgmTrack(0);
+    // 単一Audioエレメントを使い回す（iOSはendedハンドラ内でnew Audio().play()不可）
+    const audio = new Audio(BGM_TRACKS[0]);
+    audio.volume = BGM_VOLUME;
+    bgmRef.current = audio;
+    bgmIndexRef.current = 0;
+    audio.addEventListener("ended", () => {
+      const next = (bgmIndexRef.current + 1) % BGM_TRACKS.length;
+      bgmIndexRef.current = next;
+      // srcを変えてplayするだけ — 同一エレメントなのでiOSでも再生可
+      audio.src = BGM_TRACKS[next];
+      void audio.play().catch(() => {});
+    });
+    void audio.play().catch(() => {});
   }
 
   // DQ風「ピポン」（短い矩形波 + 少しのピッチ揺らぎ）
@@ -334,7 +347,7 @@ export function ImageForge() {
       // eslint-disable-next-line react-hooks/purity
       osc.frequency.value = 760 + Math.random() * 90;
       const t = ctx.currentTime;
-      gain.gain.setValueAtTime(0.045, t);
+      gain.gain.setValueAtTime(0.18, t);
       gain.gain.exponentialRampToValueAtTime(0.0005, t + 0.04);
       osc.start(t);
       osc.stop(t + 0.05);
@@ -360,7 +373,7 @@ export function ImageForge() {
         osc.type = "square";
         osc.frequency.value = freq;
         const t = base + i * 0.055;
-        const peak = i === notes.length - 1 ? 0.07 : 0.05;
+        const peak = i === notes.length - 1 ? 0.22 : 0.18;
         const dur = i === notes.length - 1 ? 0.22 : 0.09;
         gain.gain.setValueAtTime(peak, t);
         gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
@@ -396,7 +409,7 @@ export function ImageForge() {
         osc.type = "triangle";
         osc.frequency.value = n.freq;
         const t = ctx.currentTime + acc;
-        gain.gain.setValueAtTime(0.08, t);
+        gain.gain.setValueAtTime(0.28, t);
         gain.gain.exponentialRampToValueAtTime(0.0005, t + n.dur);
         osc.start(t);
         osc.stop(t + n.dur + 0.02);
@@ -410,7 +423,7 @@ export function ImageForge() {
       harmonyOsc.type = "triangle";
       harmonyOsc.frequency.value = 1567.98; // G6
       const ht = ctx.currentTime + acc - 0.45 * 0.88;
-      harmonyGain.gain.setValueAtTime(0.05, ht);
+      harmonyGain.gain.setValueAtTime(0.20, ht);
       harmonyGain.gain.exponentialRampToValueAtTime(0.0005, ht + 0.45);
       harmonyOsc.start(ht);
       harmonyOsc.stop(ht + 0.5);
@@ -940,6 +953,11 @@ export function ImageForge() {
 
   async function downloadZip() {
     if (!completed.length) return;
+    // iOS Safari は非同期処理後のダウンロードに対応していない
+    if (isIOS()) {
+      logMessage("iPhoneでは「1まいずつ ほぞん」を つかってね！");
+      return;
+    }
     logMessage("宝箱に 画像を つめている…");
     const { default: JSZip } = await import("jszip");
     const zip = new JSZip();
