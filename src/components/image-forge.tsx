@@ -16,7 +16,7 @@ const HERO_NAME_KEY = "gazo-renkin:hero-name";
 const HERO_NAME_MAX = 6;
 const SOUND_MUTED_KEY = "gazo-renkin:muted";
 const BGM_TRACKS = ["/BGM3.mp3", "/BGM2.wav", "/BGM1.mp3", "/BGM4.wav"];
-const BGM_VOLUME = 0.04;
+const BGM_VOLUME = 0.12;
 const TYPE_INTERVAL_MS = 38; // 1文字あたり
 const BEEP_EVERY = 2; // 何文字おきにビープを鳴らすか
 const HP_MAX = 1080;
@@ -220,6 +220,14 @@ export function ImageForge() {
   const [hokanteSelectedIds, setHokanteSelectedIds] = useState<string[]>([]);
   // 重複警告
   const [duplicateWarningFiles, setDuplicateWarningFiles] = useState<string[]>([]);
+  // iOS 判定（マウント後に確定。SSR でのハイドレーション不一致を避ける）
+  const [isIOSClient, setIsIOSClient] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsIOSClient(/iPhone|iPad|iPod/i.test(navigator.userAgent));
+  }, []);
 
   useEffect(() => {
     const urls = objectUrls.current;
@@ -319,17 +327,29 @@ export function ImageForge() {
     if (bgmStarted.current) return;
     bgmStarted.current = true;
     // 単一Audioエレメントを使い回す（iOSはendedハンドラ内でnew Audio().play()不可）
-    const audio = new Audio(BGM_TRACKS[0]);
+    const audio = new Audio();
+    audio.preload = "auto";
     audio.volume = BGM_VOLUME;
+    audio.loop = false;
     bgmRef.current = audio;
     bgmIndexRef.current = 0;
-    audio.addEventListener("ended", () => {
+
+    // 次トラックへ進める共通処理。src 変更後に load() を明示的に呼ぶことで
+    // iOS/Safari でも確実にロード→再生できる。
+    const advanceTrack = () => {
       const next = (bgmIndexRef.current + 1) % BGM_TRACKS.length;
       bgmIndexRef.current = next;
-      // srcを変えてplayするだけ — 同一エレメントなのでiOSでも再生可
       audio.src = BGM_TRACKS[next];
+      audio.load();
       void audio.play().catch(() => {});
-    });
+    };
+
+    audio.addEventListener("ended", advanceTrack);
+    // ファイルロード失敗時も次トラックへスキップして停止しないようにする
+    audio.addEventListener("error", advanceTrack);
+
+    audio.src = BGM_TRACKS[0];
+    audio.load();
     void audio.play().catch(() => {});
   }
 
@@ -1287,24 +1307,50 @@ export function ImageForge() {
             <div className="dq-submenu-card" data-glow={glowTarget === "submenu" ? true : undefined} role="group" aria-label="ほぞんメニュー">
               <p className="dq-submenu-title">ぼうぎょ</p>
               <ul className="dq-submenu">
-                <li>
-                  <button
-                    type="button"
-                    disabled={!completed.length}
-                    onClick={() => void downloadZip()}
-                  >
-                    <span>ZIPで まとめてほぞん</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    disabled={!completed.length}
-                    onClick={saveAllIndividually}
-                  >
-                    <span>1まいずつ ほぞん</span>
-                  </button>
-                </li>
+                {!isIOSClient && (
+                  <>
+                    <li>
+                      <button
+                        type="button"
+                        disabled={!completed.length}
+                        onClick={() => void downloadZip()}
+                      >
+                        <span>ZIPで まとめてほぞん</span>
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        disabled={!completed.length}
+                        onClick={saveAllIndividually}
+                      >
+                        <span>1まいずつ ほぞん</span>
+                      </button>
+                    </li>
+                  </>
+                )}
+                {isIOSClient && completed.length > 0 && (
+                  <>
+                    <li className="dq-submenu-empty">
+                      iPhoneは 1まいずつ 新タブで ひらきます。長押し→「イメージを保存」で写真に保存。
+                    </li>
+                    {completed.map((item) => {
+                      const isSaved = savedResultIds.includes(item.id);
+                      return (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            onClick={() => saveOne(item)}
+                          >
+                            <span>
+                              {isSaved ? "✓ " : ""}「{enemyLabel(item.file.name)}」を ひらく
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </>
+                )}
                 {!completed.length && (
                   <li className="dq-submenu-empty">まず まほうを となえよ。</li>
                 )}
